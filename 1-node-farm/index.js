@@ -33,30 +33,58 @@ console.log('async');
 ///////////////Servers/////////////////////
 ///////////////////////////////////////////
 
+const replaceTemplate = (temp,product) => {
+    // </{%PRODUCTNAME%}/g> this means to replace all the place holders not the first one
+    let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+    output = output.replace(/{%IMAGE%}/g, product.image);
+    output = output.replace(/{%PRICE%}/g, product.price);
+    output = output.replace(/{%FROM%}/g, product.from);
+    output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+    output = output.replace(/{%QUANTITY%}/g, product.quantity);
+    output = output.replace(/{%DESCRIPTION%}/g, product.description);
+    output = output.replace(/{%ID%}/g, product.id);
+
+    if(!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+    return output;
+}
+
 // the "." means the directory we are running the script from
 // the "__dirname" means the current directory of the file
  /* we used the sync version because it will be executed one time 
  in the beginning instead of executed each time a response come  */
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
-const productData = JSON.parse(data);
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`,'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8');
+const dataObj = JSON.parse(data);
 
 const server = http.createServer((request,response)=>{
     //Note: Express is tool to handle complex routes in big project
     //console.log(request);
     const routeName = request.url;
     //note === means compare the value and the type
+    // Overview page
     if(routeName==='/' || routeName === '/overview'){
-        response.end('this is the overView');
+        response.writeHead(200,{
+            'Content-type': 'text/html'
+        });
+
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard,el)).join('');
+        const output = tempOverview.replace(/{%PRODUCT_CARDS%}/g, cardsHtml);
+        response.end(output);
     }
+    // Product page
     else if (routeName === '/product'){
         response.end('this is the product');
     }
+    // Api page
     else if (routeName === '/api'){
         response.writeHead(200,{
             'Content-type': 'application/json'
         });
         response.end(data);
     }
+    // Notfound page
     else{
         //this to set the response status
         //the headers&status must be written before response itself
