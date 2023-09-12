@@ -43,13 +43,25 @@ const server = http.createServer((request,response)=>{
     else if (routeName === '/product'){
         response.end('this is the product');
     }
+    else if (routeName === '/api'){
+        // the "." means the directory we are running the script from
+        // the "__dirname" means the current directory of the file
+        fs.readFile(`${__dirname}/dev-data/data.json`,'utf-8', (err,data) =>{
+            const productDAta = JSON.parse(data)
+            response.writeHead(200,{
+                'Content-type': 'application/json'
+            });
+            response.end(data);
+        });
+    }
     else{
         //this to set the response status
-        //the headers must be written before response itself
+        //the headers&status must be written before response itself
         response.writeHead(404,{
             'Content-type': 'text/html',
             'my-header': 'hello-world'
         });
+
         response.end('<h1>page not found!</h1>');
     }
 });
