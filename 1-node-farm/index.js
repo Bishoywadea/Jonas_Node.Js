@@ -30,7 +30,7 @@ console.log('async');
 */
 
 ///////////////////////////////////////////
-///////////////Servers/////////////////////
+////////////Servers////////////////////////
 ///////////////////////////////////////////
 
 const replaceTemplate = (temp,product) => {
@@ -61,10 +61,11 @@ const dataObj = JSON.parse(data);
 const server = http.createServer((request,response)=>{
     //Note: Express is tool to handle complex routes in big project
     //console.log(request);
-    const routeName = request.url;
+    //const routeName = request.url;
+    const {query,pathname} = url.parse(request.url,true); 
     //note === means compare the value and the type
     // Overview page
-    if(routeName==='/' || routeName === '/overview'){
+    if(pathname==='/' || pathname === '/overview'){
         response.writeHead(200,{
             'Content-type': 'text/html'
         });
@@ -74,11 +75,16 @@ const server = http.createServer((request,response)=>{
         response.end(output);
     }
     // Product page
-    else if (routeName === '/product'){
-        response.end('this is the product');
+    else if (pathname === '/product'){
+        const product = dataObj[query.id];
+        response.writeHead(200,{
+            'Content-type': 'text/html'
+        });
+        const output = replaceTemplate(tempProduct,product);
+        response.end(output);
     }
     // Api page
-    else if (routeName === '/api'){
+    else if (pathname === '/api'){
         response.writeHead(200,{
             'Content-type': 'application/json'
         });
