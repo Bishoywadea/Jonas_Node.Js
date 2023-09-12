@@ -41,6 +41,7 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
 const productData = JSON.parse(data);
 
 const server = http.createServer((request,response)=>{
+    //Note: Express is tool to handle complex routes in big project
     //console.log(request);
     const routeName = request.url;
     //note === means compare the value and the type
