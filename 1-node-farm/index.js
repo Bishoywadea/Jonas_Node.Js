@@ -33,6 +33,13 @@ console.log('async');
 ///////////////Servers/////////////////////
 ///////////////////////////////////////////
 
+// the "." means the directory we are running the script from
+// the "__dirname" means the current directory of the file
+ /* we used the sync version because it will be executed one time 
+ in the beginning instead of executed each time a response come  */
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
+const productData = JSON.parse(data);
+
 const server = http.createServer((request,response)=>{
     //console.log(request);
     const routeName = request.url;
@@ -44,15 +51,10 @@ const server = http.createServer((request,response)=>{
         response.end('this is the product');
     }
     else if (routeName === '/api'){
-        // the "." means the directory we are running the script from
-        // the "__dirname" means the current directory of the file
-        fs.readFile(`${__dirname}/dev-data/data.json`,'utf-8', (err,data) =>{
-            const productDAta = JSON.parse(data)
-            response.writeHead(200,{
-                'Content-type': 'application/json'
-            });
-            response.end(data);
+        response.writeHead(200,{
+            'Content-type': 'application/json'
         });
+        response.end(data);
     }
     else{
         //this to set the response status
