@@ -1,5 +1,6 @@
 const fs = require('fs');
 const http  = require('http');
+const url  = require('url');
 
 ///////////////////////////////////////////
 ////////////Files Handling/////////////////
@@ -33,11 +34,27 @@ console.log('async');
 ///////////////////////////////////////////
 
 const server = http.createServer((request,response)=>{
-    console.log(request);
-    response.end('Hello from the server!');
+    //console.log(request);
+    const routeName = request.url;
+    //note === means compare the value and the type
+    if(routeName==='/' || routeName === '/overview'){
+        response.end('this is the overView');
+    }
+    else if (routeName === '/product'){
+        response.end('this is the product');
+    }
+    else{
+        //this to set the response status
+        //the headers must be written before response itself
+        response.writeHead(404,{
+            'Content-type': 'text/html',
+            'my-header': 'hello-world'
+        });
+        response.end('<h1>page not found!</h1>');
+    }
 });
 
 //server.listen(portNumber,localHost,optionalFunction)
 server.listen(8000,'127.0.0.1',()=>{
-    console.log('heard request on port 8000');
+    console.log('listening request on port 8000');
 })
