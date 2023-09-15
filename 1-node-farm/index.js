@@ -45,7 +45,7 @@ const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'ut
 const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8');
 const dataObj = JSON.parse(data);
 
-const slugs = dataObj.map(el=>slugify(el.productName,{lower:true}));
+const slugs = dataObj.map(el=>slugify(el.productName,{lower:true}))
 
 const server = http.createServer((request,response)=>{
     //Note: Express is tool to handle complex routes in big project
@@ -73,7 +73,7 @@ const server = http.createServer((request,response)=>{
         response.end(output);
     }
     // Api page
-    else if (pathname === '/api'){
+    else (pathname === '/api'){
         response.writeHead(200,{
             'Content-type': 'application/json'
         });
