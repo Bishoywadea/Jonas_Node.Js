@@ -10,6 +10,13 @@ const tours = JSON.parse(
     fs.readFileSync('./dev-data/data/tours-simple.json')
 );
 
+// types of http methods:
+// GET method is to read data
+// POST to create new resource
+// PUT to update the resource by sending the entire updated object
+// PATCH to update the resource by sending only the updated part
+// DELETE to delete but you must be authenticated
+
 app.get('/api/v1/tours',(req,res)=>{
     res.status(200).json({
         status:'success',
@@ -56,6 +63,35 @@ app.post('/api/v1/tours',(req,res)=>{
                 tour:newTour,
             }
         });
+    })
+});
+
+
+app.patch('/api/v1/tours/:id',(req,res)=>{
+    if((req.params.id*1)>tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message : 'not valid id'
+        })
+    }
+    res.status(200).json({
+        status:'success',
+        data:{
+            tour:'<updated tour here ....>'
+        }
+    })
+});
+
+app.delete('/api/v1/tours/:id',(req,res)=>{
+    if((req.params.id*1)>tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message : 'not valid id'
+        })
+    }
+    res.status(204).json({
+        status: 'success',
+        data: null
     })
 });
 
