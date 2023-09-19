@@ -166,15 +166,22 @@ app.patch('/api/v1/tours/:id', updateTour);
 app.delete('/api/v1/tours/:id', deleteTour);
  */
 
-app.route('/api/v1/tours/').get(getAllTours).post(createTour);
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+// it is calling mounting the routers
+app.use('/api/v1/tours/', tourRouter);
+app.use('/api/v1/users/', userRouter);
+
+tourRouter.route('/').get(getAllTours).post(createTour);
 app.use((req, res, next) => {
   print('hello from the middleware after get all tours and createTour');
   next();
 });
-app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour);
+tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
 
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
-app.route('/api/v1/users/:id').get(getUser).patch(updateUser).delete(deleteUser);
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 //////////////////////////////
 ////////STARTSERVER///////////
