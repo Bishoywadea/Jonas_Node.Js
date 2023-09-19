@@ -10,15 +10,17 @@ const app = express();
 //////////////////////////////
 /////////MIDDLEWARES//////////
 //////////////////////////////
+print(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
-app.use(morgan('dev'));
-
-// "express.json()" is called middleware
-// this "use" function is to add middleware to the stack
-// that will be applied to every request
 app.use(express.json());
 
-// this is our custom middleware
+// when we type an url and it doesn't exist in any routes
+// it will search in that directory
+app.use(express.static(`${__dirname}/public`));
+
 app.use((req, res, next) => {
   print('hello from the middleware in the begin of program');
   next();
@@ -28,7 +30,6 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
 
 //////////////////////////////
 ////////////ROUTES////////////
