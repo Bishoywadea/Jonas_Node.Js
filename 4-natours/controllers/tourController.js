@@ -85,6 +85,7 @@ exports.updateTour = async (req, res) => {
         res.status(400).json({
             status: 'fail',
             message: 'invalid data sent',
+            err: err
         });
     }
 };
@@ -100,6 +101,7 @@ exports.deleteTour = async (req, res) => {
         res.status(400).json({
             status: 'fail',
             message: 'invalid data sent',
+            err: err
         });
     }
 };
