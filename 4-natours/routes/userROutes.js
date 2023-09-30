@@ -1,10 +1,14 @@
 const print = console.log;
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 const express = require('express');
 
 const router = express.Router();
 
+// this is not REST Api
+router.post('/signup', authController.signup)
 
+// this is REST Api
 router
     .route('/')
     .get(userController.getAllUsers)
