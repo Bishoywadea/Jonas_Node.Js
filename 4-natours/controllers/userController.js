@@ -1,10 +1,17 @@
+const User = require('../models/userModel');
+const APIFeatures = require('../utils/api-features');
+const catchAsync = require('../utils/catchAsync');
 
-exports.getAllUsers = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "this is not defined",
-    })
-};
+exports.getAllUsers = catchAsync(async (req, res) => {
+    const users = await User.find();
+    res.status(200).json({
+        status: 'success',
+        results: users.length,
+        data: {
+            tours: users,
+        },
+    });
+});
 
 exports.getUser = (req, res) => {
     res.status(500).json({

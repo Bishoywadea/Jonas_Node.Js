@@ -7,6 +7,7 @@ const router = express.Router();
 
 // this is not REST Api
 router.post('/signup', authController.signup)
+router.post('/login', authController.login)
 
 // this is REST Api
 router
