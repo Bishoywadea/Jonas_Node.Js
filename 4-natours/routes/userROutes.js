@@ -6,8 +6,10 @@ const express = require('express');
 const router = express.Router();
 
 // this is not REST Api
-router.post('/signup', authController.signup)
-router.post('/login', authController.login)
+router.post('/signup', authController.signup);
+router.post('/login', authController.login);
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
 
 // this is REST Api
 router
