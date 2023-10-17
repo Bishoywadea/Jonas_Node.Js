@@ -73,7 +73,7 @@ const server = http.createServer((request,response)=>{
         response.end(output);
     }
     // Api page
-    else (pathname === '/api'){
+    else if(pathname === '/api'){
         response.writeHead(200,{
             'Content-type': 'application/json'
         });
@@ -93,6 +93,6 @@ const server = http.createServer((request,response)=>{
 });
 
 //server.listen(portNumber,localHost,optionalFunction)
-server.listen(8000,'127.0.0.1',()=>{
-    console.log('listening request on port 8000');
+server.listen(3000,'127.0.0.1',()=>{
+    console.log('listening request on port 3000');
 })
