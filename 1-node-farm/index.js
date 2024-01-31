@@ -39,51 +39,51 @@ console.log('async');
 // the "__dirname" means the current directory of the file
 /* we used the sync version because it will be executed one time 
  in the beginning instead of executed each time a response come  */
-const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
-const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`,'utf-8');
-const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8');
-const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8');
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
 const dataObj = JSON.parse(data);
+// @ts-ignore
+const slugs = dataObj.map(el => slugify(el.productName, { lower: true }))
 
-const slugs = dataObj.map(el=>slugify(el.productName,{lower:true}))
-
-const server = http.createServer((request,response)=>{
+const server = http.createServer((request, response) => {
     //Note: Express is tool to handle complex routes in big project
     //console.log(request);
     //const routeName = request.url;
-    const {query,pathname} = url.parse(request.url,true); 
+    const { query, pathname } = url.parse(request.url, true);
     //note === means compare the value and the type
     // Overview page
-    if(pathname==='/' || pathname === '/overview'){
-        response.writeHead(200,{
+    if (pathname === '/' || pathname === '/overview') {
+        response.writeHead(200, {
             'Content-type': 'text/html'
         });
 
-        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard,el)).join('');
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('');
         const output = tempOverview.replace(/{%PRODUCT_CARDS%}/g, cardsHtml);
         response.end(output);
     }
     // Product page
-    else if (pathname === '/product'){
+    else if (pathname === '/product') {
         const product = dataObj[query.id];
-        response.writeHead(200,{
+        response.writeHead(200, {
             'Content-type': 'text/html'
         });
-        const output = replaceTemplate(tempProduct,product);
+        const output = replaceTemplate(tempProduct, product);
         response.end(output);
     }
     // Api page
-    else (pathname === '/api'){
-        response.writeHead(200,{
+    else if (pathname === '/api') {
+        response.writeHead(200, {
             'Content-type': 'application/json'
         });
         response.end(data);
     }
     // Notfound page
-    else{
+    else {
         //this to set the response status
         //the headers&status must be written before response itself
-        response.writeHead(404,{
+        response.writeHead(404, {
             'Content-type': 'text/html',
             'my-header': 'hello-world'
         });
@@ -93,6 +93,6 @@ const server = http.createServer((request,response)=>{
 });
 
 //server.listen(portNumber,localHost,optionalFunction)
-server.listen(8000,'127.0.0.1',()=>{
-    console.log('listening request on port 8000');
+server.listen(3000, '127.0.0.1', () => {
+    console.log('listening request on port 3000');
 })

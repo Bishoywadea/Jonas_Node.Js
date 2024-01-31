@@ -83,11 +83,11 @@ app.use('/api/v1/tours/', tourRouter);
 app.use('/api/v1/users/', userRouter);
 
 app.all('*', (req, res, next) => {
-  // const err = new Error(`can\'t find ${req.originalUrl} on this server`);
-  // // @ts-ignore
-  // err.status = 'fail';
-  // // @ts-ignore
-  // err.statusCode = 404;
+  const err = new Error(`can\'t find ${req.originalUrl} on this server`);
+  // @ts-ignore
+  err.status = 'fail';
+  // @ts-ignore
+  err.statusCode = 404;
 
   // whenever we pass anything to next function 
   // express wil skip all the next middlewares 
