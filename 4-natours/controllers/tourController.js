@@ -1,9 +1,7 @@
 const print = console.log;
 const { request, param } = require('../app');
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/api-features');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 const factory = require('./handleFactory');
 
 exports.aliasTopTours = (req, res, next) => {
@@ -13,34 +11,9 @@ exports.aliasTopTours = (req, res, next) => {
     next();
 }
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-    // Execute Query
-    const features = new APIFeatures(Tour.find(), req.query).filter().sort().limiting().paginate();
-    const tours = await features.query;
-    res.status(200).json({
-        status: 'success',
-        results: tours.length,
-        data: {
-            tours: tours,
-        },
-    });
-});
+exports.getAllTours = factory.getAll(Tour);
 
-exports.getTour = catchAsync(async (req, res, next) => {
-    //note this populate is effecting performance on large scale
-    const tour = await Tour.findById(req.params.id).populate('reviews');
-
-    if (!tour) {
-        return next(new AppError('no tour found with that id', 404));
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: {
-            tour: tour,
-        },
-    });
-});
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
 exports.createTour = factory.createOne(Tour);
 
