@@ -26,7 +26,8 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findById(req.params.id);
+    //note this populate is effecting performance on large scale
+    const tour = await Tour.findById(req.params.id).populate('reviews');
 
     if (!tour) {
         return next(new AppError('no tour found with that id', 404));

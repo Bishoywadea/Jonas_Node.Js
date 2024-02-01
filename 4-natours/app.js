@@ -11,6 +11,7 @@ const hpp = require('hpp');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userROutes');
+const reviewRouter = require('./routes/reviewRouter');
 
 const app = express();
 
@@ -81,6 +82,7 @@ app.use((req, res, next) => {
 // it is calling mounting the routers
 app.use('/api/v1/tours/', tourRouter);
 app.use('/api/v1/users/', userRouter);
+app.use('/api/v1/reviews/', reviewRouter);
 
 app.all('*', (req, res, next) => {
   const err = new Error(`can\'t find ${req.originalUrl} on this server`);
