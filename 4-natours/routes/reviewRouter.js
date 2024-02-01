@@ -8,8 +8,13 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(authController.protect, authController.restrictTo('user'), reviewController.createReview)
+  .post(authController.protect, authController.restrictTo('user'), reviewController.setTourUserId, reviewController.createReview)
   .get(reviewController.getAllReviews);
+
+router.
+  route('/:id')
+  .delete(reviewController.deleteReview)
+  .patch(reviewController.updateReview);
 
 
 module.exports = router;

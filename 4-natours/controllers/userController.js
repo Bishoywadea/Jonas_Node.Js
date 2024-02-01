@@ -2,6 +2,8 @@ const User = require('../models/userModel');
 const APIFeatures = require('../utils/api-features');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const factory = require('./handleFactory');
+
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -69,17 +71,6 @@ exports.createUser = (req, res) => {
     })
 };
 
-exports.updateUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "this is not defined",
-    })
-};
+exports.updateUser = factory.updateOne(User);
 
-exports.deleteUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        message: "this is not defined",
-    })
-};
-
+exports.deleteUser = factory.deleteOne(User);
