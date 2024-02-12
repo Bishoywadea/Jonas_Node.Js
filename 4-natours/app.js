@@ -13,6 +13,7 @@ const path = require('path');
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/userRouter');
 const reviewRouter = require('./routes/reviewRouter');
+const viewsRouter = require('./routes/viewsRouter');
 
 const app = express();
 
@@ -84,13 +85,9 @@ app.use((req, res, next) => {
 //////////////////////////////
 ////////////ROUTES////////////
 //////////////////////////////
-app.get('/',(req,res)=>{
-  res.status(200).render('base',{
-    tour:'The Forest Hiker',
-    user:'Bishoy',
-  });
-})
+
 // it is calling mounting the routers
+app.use('/', viewsRouter);
 app.use('/api/v1/tours/', tourRouter);
 app.use('/api/v1/users/', userRouter);
 app.use('/api/v1/reviews/', reviewRouter);
