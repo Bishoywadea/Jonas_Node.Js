@@ -6,7 +6,9 @@
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "set NODE_ENV=production&& nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js/bundle.js",
+    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js/bundle.js"
   },
   "author": "-NoName",
   "license": "ISC",
@@ -37,6 +39,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
+    "parcel-bundler": "^1.12.5",
     "prettier": "^3.0.3"
   }
 }

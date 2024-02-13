@@ -4,6 +4,8 @@ const router = express.Router();
  
 router.get('/',viewsController.getOverView);
 
+router.get('/login',viewsController.getLoginPage);
+
 router.get('/tour/:name',viewsController.getTour);
   
 
