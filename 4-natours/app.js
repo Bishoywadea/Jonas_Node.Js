@@ -1,111 +1,87 @@
-const print = console.log;
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
-const AppError = require('./utils/appError');
-const globalErrorHandler = require('./controllers/errorController');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const path = require('path');
+const cookieParser = require('cookie-parser');
 
-const tourRouter = require('./routes/tourRouter');
-const userRouter = require('./routes/userRouter');
-const reviewRouter = require('./routes/reviewRouter');
-const viewsRouter = require('./routes/viewsRouter');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
 app.set('view engine', 'pug');
-app.set('views',path.join(__dirname,'views'));
+app.set('views', path.join(__dirname, 'views'));
 
-// when we type an url and it doesn't exist in any routes
-// it will search in that directory
-app.use(express.static(path.join(__dirname,'public')));
+// 1) GLOBAL MIDDLEWARES
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-//////////////////////////////
-/////////MIDDLEWARES//////////
-//////////////////////////////
-
-// set security http headers
-// @ts-ignore
+// Set security HTTP headers
 app.use(helmet());
 
-// development logging
-print(process.env.NODE_ENV);
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// limit requests from same api
-// @ts-ignore
+// Limit requests from same API
 const limiter = rateLimit({
   max: 100,
-  windowMs: 60 * 60 * 10000,
-  message: 'too many req from same id try again after an hour'
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!'
 });
 app.use('/api', limiter);
 
-// body parser, reading data from body into req.body
-app.use(express.json({
-  limit: '10kb'
-}));
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(cookieParser());
 
-// data sanitization against NoSQL query injection
-// example for it in email we can type ({"$gt":""} and correct password it will enter)
+// Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-// data sanitization against XSS
+// Data sanitization against XSS
 app.use(xss());
 
-// parameter pollution protector 
-// example for it (/api/v1/tours?sort=duration&sort=price)
-app.use(hpp({
-  whitelist: [
-    "duration",
-    "ratingsQuantity",
-    "ratingsAvg",
-    "maxGroupSize",
-    "difficulty",
-    "price"
-  ]
-}));
+// Prevent parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price'
+    ]
+  })
+);
 
-
-
-// test middleware
+// Test middleware
 app.use((req, res, next) => {
-  // @ts-ignore
   req.requestTime = new Date().toISOString();
-  print(req.headers);
+  console.log(req.cookies);
   next();
 });
 
-//////////////////////////////
-////////////ROUTES////////////
-//////////////////////////////
-
-// it is calling mounting the routers
-app.use('/', viewsRouter);
-app.use('/api/v1/tours/', tourRouter);
-app.use('/api/v1/users/', userRouter);
-app.use('/api/v1/reviews/', reviewRouter);
+// 3) ROUTES
+app.use('/', viewRouter);
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
-  const err = new Error(`can\'t find ${req.originalUrl} on this server`);
-  // @ts-ignore
-  err.status = 'fail';
-  // @ts-ignore
-  err.statusCode = 404;
-
-  // whenever we pass anything to next function 
-  // express wil skip all the next middlewares 
-  // and go to the global error handling middleware
-  next(new AppError(`can\'t find ${req.originalUrl} on this server`, 404));
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-//error handling middleware
 app.use(globalErrorHandler);
 
 module.exports = app;
