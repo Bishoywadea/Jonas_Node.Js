@@ -10,7 +10,7 @@
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "watch:dev": "npm-run-all --parallel watch:js start",   
-    "watch:prod": "npm-run-all --parallel watch:js start:prod"  
+    "watch:prod": "npm-run-all --parallel watch:js start"  
 
   },
   "author": "Bishoy Wadea",
